@@ -75,8 +75,8 @@ from aiogram.types import (
 # ==============================================================================
 # 1. BOT CONFIGURATION & CONSTANTS
 # ==============================================================================
-BOT_TOKEN = "8880156406:AAEpxUgYG6lqNFblmDGyJjnFpNgK60M3Cl4"
-BOT_USERNAME = "Vickystor_bot"
+BOT_TOKEN = "8737610592:AAGyZPVbKVKVzwIQbVlt9jG2Z-TXcaRDbO0"
+BOT_USERNAME = "VickyXmodestor_bot"
 ADMIN_ID = 8700582148
 ADMIN_CONTACT = "@VICKYXMOD"
 
