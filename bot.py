@@ -135,14 +135,28 @@ class _StyledIKB(InlineKeyboardButton):
         except: pass
         return d
 
+def _button_custom_emoji_id():
+    """Give every bot button a premium custom-emoji icon by default."""
+    try:
+        return random.choice(_PE_IDS)
+    except Exception:
+        # Valid custom emoji already used elsewhere in this bot as a fallback.
+        return "5258021357446268553"
+
 def _KB(text, style=None, icon_custom_emoji_id=None, **kwargs):
     if style == 'active': style = 'success'
+    # Preserve an explicitly configured emoji ID; fill in all buttons without one.
+    if not icon_custom_emoji_id:
+        icon_custom_emoji_id = _button_custom_emoji_id()
     try: return _StyledKB(text, style=style, icon_custom_emoji_id=icon_custom_emoji_id, **kwargs)
     except:
         try: return KeyboardButton(text, **kwargs)
         except: return KeyboardButton(text)
 
 def _IKB(text, style=None, icon_custom_emoji_id=None, **kwargs):
+    # Preserve an explicitly configured emoji ID; fill in all buttons without one.
+    if not icon_custom_emoji_id:
+        icon_custom_emoji_id = _button_custom_emoji_id()
     try: return _StyledIKB(text, style=style, icon_custom_emoji_id=icon_custom_emoji_id, **kwargs)
     except:
         try: return InlineKeyboardButton(text, **kwargs)
@@ -1057,8 +1071,8 @@ for f in ['number','username','aadhar','instagram','freefire','tgid','freefire_l
 conn.commit()
 
 FORCE_JOIN_DEFAULT_CHANNELS = [
-    ("@Vickyffstore1", "vickypaymentproof", "https://t.me/+nykJy-FjkGpjNTBl"),
-    ("@Vickyffstore11", "Felix Bhai", "https://t.me/Felix_bhai1"),
+    ("-1004459723962", "ᴠɪᴄᴋʏ ꜰꜰ ᴩʀᴏᴏꜰ", "https://t.me/+nykJy-FjkGpjNTBl"),
+    ("-1004452228199", "ᴠɪᴄᴋʏ ꜰꜰ ꜰɪʟᴇ ᴜᴩᴅᴀᴛᴇ", "https://t.me/+zalebF0RVKxmMGFl"),
 ]
 
 def _fj_normalize(cid):
@@ -1477,7 +1491,8 @@ def get_channels_keyboard(uid=None):
     """Force join buttons banao. Sirf un channels ke buttons dikhao jo user ne join nahi kiye."""
     chs = get_force_join_channels()
     if not chs: return None
-    mk = InlineKeyboardMarkup(row_width=1)
+    # Two join buttons side-by-side; verify button remains on its own row.
+    mk = InlineKeyboardMarkup(row_width=2)
     has_buttons = False
     seen_btn = set()
     for entry in chs:
@@ -1499,7 +1514,7 @@ def get_channels_keyboard(uid=None):
                 # Bot channel access nahi kar sakta — PHIR BHI button dikhao (URL join works)
                 # Sirf tab skip karo jab confirmed joined ho (but that won't exception)
                 pass  # show the button anyway
-        mk.add(_IKB(f"ᴊᴏɪɴ {t[:25]}", style="primary", icon_custom_emoji_id="5258021357446268553", url=u))
+        mk.add(_IKB(t, style="success", icon_custom_emoji_id="5258021357446268553", url=u))
         has_buttons = True
     if not has_buttons: return None
     mk.add(_IKB("ɪ ᴊᴏɪɴᴇᴅ — ᴠᴇʀɪꜰʏ ✅", style="success", icon_custom_emoji_id="6147565374289220368", callback_data="verify_channels"))
@@ -3956,100 +3971,57 @@ def _rpe():
     return random.choice(_PE_IDS)
 
 def kb_p1(uid):
-    mk=ReplyKeyboardMarkup(resize_keyboard=True,row_width=2)
+    """Main menu shown inline in the chat, not in Telegram's bottom reply-keyboard bar."""
+    mk=InlineKeyboardMarkup(row_width=2)
     if not _IS_CLONE:
-        # Number info — akela full width row
+        mk.row(_IKB("📱 ɴᴜᴍʙᴇʀ ɪɴꜰᴏ", style="success", callback_data="menu_number"))
         mk.row(
-            _KB("ɴᴜᴍʙᴇʀ ɪɴꜰᴏ", style="success", icon_custom_emoji_id="5465169893580086142"))
-        # Pairs
+            _IKB("🔎 ᴛɢ ᴜꜱᴇʀ ᴛᴏ ɴᴜᴍ", style="success", callback_data="menu_tgid"),
+            _IKB("🎯 ꜱᴇʟᴇᴄᴛ ᴛᴀʀɢᴇᴛ", style="success", callback_data="menu_select_user"))
         mk.row(
-            _KB("ᴛɢ ᴜꜱᴇʀ ᴛᴏ ɴᴜᴍ", style="success", icon_custom_emoji_id="5188217332748527444"),
-            _KB("ꜱᴇʟᴇᴄᴛ ᴛᴀʀɢᴇᴛ",   style="success", icon_custom_emoji_id="6109432142079466939",
-                request_user=KeyboardButtonRequestUser(request_id=1, user_is_bot=False)))
+            _IKB("🎮 ꜰʀᴇᴇ ꜰɪʀᴇ ɪɴꜰᴏ", style="success", callback_data="menu_freefire"),
+            _IKB("❤️ ꜰʀᴇᴇ ꜰɪʀᴇ ʟɪᴋᴇ", style="success", callback_data="menu_freefire_like"))
         mk.row(
-            _KB("ꜰʀᴇᴇ ꜰɪʀᴇ ɪɴꜰᴏ",  style="success", icon_custom_emoji_id="5472159355853888315"),
-            _KB("ꜰʀᴇᴇ ꜰɪʀᴇ ʟɪᴋᴇ",  style="success", icon_custom_emoji_id="6208452093397699863"))
+            _IKB("📸 ɪɴꜱᴛᴀɢʀᴀᴍ ɪɴꜰᴏ", style="success", callback_data="menu_instagram"),
+            _IKB("💣 ʙᴏᴍʙᴇʀ", style="success", callback_data="menu_bomber"))
         mk.row(
-            _KB("ɪɴꜱᴛᴀɢʀᴀᴍ ɪɴꜰᴏ",  style="success", icon_custom_emoji_id="5281024850096301559"),
-            _KB("ʙᴏᴍʙᴇʀ",           style="success", icon_custom_emoji_id="5469654973308476699"))
-        mk.row(
-            _KB("ᴅᴀɪʟʏ ꜱᴘɪɴ",      style="success", icon_custom_emoji_id="5449800250032143374"),
-            _KB("ᴡᴀʟʟᴇᴛ & ʀᴇꜰᴇʀ",  style="success", icon_custom_emoji_id="5224257782013769471"))
-        mk.row(
-            _KB("ꜱᴜᴩᴩᴏʀᴛ",          style="success", icon_custom_emoji_id="6269490656779965144"))
+            _IKB("🎁 ᴅᴀɪʟʏ ꜱᴘɪɴ", style="success", callback_data="menu_spin"),
+            _IKB("💰 ᴡᴀʟʟᴇᴛ & ʀᴇꜰᴇʀ", style="success", callback_data="menu_mycredits"))
+        mk.row(_IKB("🆘 ꜱᴜᴩᴩᴏʀᴛ", style="success", url="https://t.me/VICKYFFSUPPORT"))
         if is_admin(uid):
-            mk.row(
-                _KB("ɴᴇxᴛ ᴩᴀɢᴇ",   style="danger", icon_custom_emoji_id="5832251986635920010"),
-                _KB("ᴀᴅᴍɪɴ ᴩᴀɴᴇʟ", style="danger", icon_custom_emoji_id="6237699910150397736"))
+            mk.row(_IKB("➡️ ɴᴇxᴛ ᴩᴀɢᴇ", style="primary", callback_data="menu_p2"),
+                   _IKB("⚙️ ᴀᴅᴍɪɴ ᴩᴀɴᴇʟ", style="danger", callback_data="menu_admin"))
         else:
-            mk.row(
-                _KB("ɴᴇxᴛ ᴩᴀɢᴇ",   style="danger", icon_custom_emoji_id="5832251986635920010"))
+            mk.row(_IKB("➡️ ɴᴇxᴛ ᴩᴀɢᴇ", style="primary", callback_data="menu_p2"))
     else:
-        # Clone bot — PREMIUM clone: same as original (with premium emoji icons)
-        # NORMAL clone (_IS_CLASSIC): plain emoji, no icon_custom_emoji_id
-        _classic = _IS_CLASSIC
-        if not _classic:
-            mk.row(
-                _KB("ɴᴜᴍʙᴇʀ ɪɴꜰᴏ", style="success", icon_custom_emoji_id="5465169893580086142"))
-            mk.row(
-                _KB("ᴛɢ ᴜꜱᴇʀ ᴛᴏ ɴᴜᴍ", style="success", icon_custom_emoji_id="5188217332748527444"),
-                _KB("ꜱᴇʟᴇᴄᴛ ᴛᴀʀɢᴇᴛ",   style="success", icon_custom_emoji_id="6109432142079466939",
-                    request_user=KeyboardButtonRequestUser(request_id=1, user_is_bot=False)))
-            mk.row(
-                _KB("ꜰʀᴇᴇ ꜰɪʀᴇ ɪɴꜰᴏ",  style="success", icon_custom_emoji_id="5472159355853888315"),
-                _KB("ꜰʀᴇᴇ ꜰɪʀᴇ ʟɪᴋᴇ",  style="success", icon_custom_emoji_id="6208452093397699863"))
-            mk.row(
-                _KB("ɪɴꜱᴛᴀɢʀᴀᴍ ɪɴꜰᴏ",  style="success", icon_custom_emoji_id="5281024850096301559"),
-                _KB("ʙᴏᴍʙᴇʀ",           style="success", icon_custom_emoji_id="5469654973308476699"))
-            mk.row(
-                _KB("ᴅᴀɪʟʏ ꜱᴘɪɴ",      style="success", icon_custom_emoji_id="5449800250032143374"),
-                _KB("ᴡᴀʟʟᴇᴛ & ʀᴇꜰᴇʀ",  style="success", icon_custom_emoji_id="5224257782013769471"))
-            mk.row(
-                _KB("ꜱᴜᴩᴩᴏʀᴛ",          style="success", icon_custom_emoji_id="6269490656779965144"))
-            if is_admin(uid):
-                mk.row(
-                    _KB("ɴᴇxᴛ ᴩᴀɢᴇ",   style="danger", icon_custom_emoji_id="5832251986635920010"),
-                    _KB("ᴀᴅᴍɪɴ ᴩᴀɴᴇʟ", style="danger", icon_custom_emoji_id="6237699910150397736"))
-            else:
-                mk.row(
-                    _KB("ɴᴇxᴛ ᴩᴀɢᴇ",   style="danger", icon_custom_emoji_id="5832251986635920010"))
+        mk.row(_IKB("📱 ɴᴜᴍʙᴇʀ ɪɴꜰᴏ", style="success", callback_data="menu_number"))
+        mk.row(_IKB("👤 ᴜꜱᴇʀ ɪɴꜰᴏ", style="success", callback_data="menu_username"),
+               _IKB("🎯 ꜱᴇʟᴇᴄᴛ ᴛᴀʀɢᴇᴛ", style="success", callback_data="menu_select_user"))
+        mk.row(_IKB("🎮 ꜰʀᴇᴇ ꜰɪʀᴇ ɪɴꜰᴏ", style="success", callback_data="menu_freefire"),
+               _IKB("❤️ ꜰꜰ ʟɪᴋᴇ", style="success", callback_data="menu_freefire_like"))
+        mk.row(_IKB("📸 ɪɴꜱᴛᴀɢʀᴀᴍ", style="success", callback_data="menu_instagram"),
+               _IKB("💣 ʙᴏᴍʙᴇʀ", style="success", callback_data="menu_bomber"))
+        mk.row(_IKB("🎁 ᴅᴀɪʟʏ ꜱᴘɪɴ", style="success", callback_data="menu_spin"),
+               _IKB("💰 ᴡᴀʟʟᴇᴛ & ʀᴇꜰᴇʀ", style="success", callback_data="menu_mycredits"))
+        mk.row(_IKB("🆘 ꜱᴜᴩᴩᴏʀᴛ", style="success", url="https://t.me/VICKYFFSUPPORT"))
+        if is_admin(uid):
+            mk.row(_IKB("➡️ ɴᴇxᴛ ᴩᴀɢᴇ", style="primary", callback_data="menu_p2"),
+                   _IKB("⚙️ ᴀᴅᴍɪɴ ᴩᴀɴᴇʟ", style="danger", callback_data="menu_admin"))
         else:
-            # NORMAL CLONE — plain emoji, no premium icon
-            mk.row(_KB("📱 ɴᴜᴍʙᴇʀ ɪɴꜰᴏ", style="success"))
-            mk.row(
-                _KB("👤 ᴜꜱᴇʀ ɪɴꜰᴏ", style="success"),
-                _KB("🎯 ꜱᴇʟᴇᴄᴛ ᴛᴀʀɢᴇᴛ", style="success",
-                    request_user=KeyboardButtonRequestUser(request_id=1, user_is_bot=False)))
-            mk.row(
-                _KB("🎮 ꜰʀᴇᴇ ꜰɪʀᴇ ɪɴꜰᴏ", style="success"),
-                _KB("❤️ ꜰꜰ ʟɪᴋᴇ",        style="success"))
-            mk.row(
-                _KB("📸 ɪɴꜱᴛᴀɢʀᴀᴍ",  style="success"),
-                _KB("💣 ʙᴏᴍʙᴇʀ",     style="success"))
-            mk.row(
-                _KB("🎁 ᴅᴀɪʟʏ ꜱᴘɪɴ",    style="success"),
-                _KB("💰 ᴡᴀʟʟᴇᴛ & ʀᴇꜰᴇʀ", style="success"))
-            mk.row(_KB("🆘 ꜱᴜᴩᴩᴏʀᴛ", style="success"))
-            if is_admin(uid):
-                mk.row(
-                    _KB("➡️ NORMAL ɴᴇxᴛ ᴩᴀɢᴇ", style="danger"),
-                    _KB("⚙️ ᴀᴅᴍɪɴ ᴩᴀɴᴇʟ",      style="danger"))
-            else:
-                mk.row(_KB("➡️ NORMAL ɴᴇxᴛ ᴩᴀɢᴇ", style="danger"))
+            mk.row(_IKB("➡️ ɴᴇxᴛ ᴩᴀɢᴇ", style="primary", callback_data="menu_p2"))
     return mk
 
 def kb_p2(uid):
-    mk=ReplyKeyboardMarkup(resize_keyboard=True,row_width=2)
-    # Both original and clone same page 2
-    mk.row(
-        _KB("ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ", style="success", icon_custom_emoji_id="5409008750893734809"),
-        _KB("ʀᴇᴅᴇᴇᴍ ᴄᴏᴅᴇ", style="success", icon_custom_emoji_id="5418010521309815154"))
-    mk.row(
-        _KB("ʜᴇʟᴩ",         style="success", icon_custom_emoji_id="5215644719022874555"),
-        _KB("ᴄʟᴏɴᴇ ʙᴏᴛ",    style="success", icon_custom_emoji_id="5372981976804366741"))
-    nav=[_KB("ᴩᴀɢᴇ 1", style="danger", icon_custom_emoji_id="5469735272017043817")]
-    if is_admin(uid): nav.append(_KB("ᴀᴅᴍɪɴ ᴩᴀɴᴇʟ", style="danger", icon_custom_emoji_id="5341715473882955310"))
-    mk.row(*nav); return mk
+    """Second main-menu page as inline buttons in the chat."""
+    mk=InlineKeyboardMarkup(row_width=2)
+    mk.row(_IKB("🏆 ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ", style="success", callback_data="menu_leaderboard"),
+           _IKB("🎟️ ʀᴇᴅᴇᴇᴍ ᴄᴏᴅᴇ", style="success", callback_data="menu_redeem"))
+    mk.row(_IKB("ℹ️ ʜᴇʟᴩ", style="success", callback_data="menu_helpinfo"),
+           _IKB("🤖 ᴄʟᴏɴᴇ ʙᴏᴛ", style="success", callback_data="menu_clone"))
+    nav=[_IKB("⬅️ ᴩᴀɢᴇ 1", style="danger", callback_data="menu_p1")]
+    if is_admin(uid): nav.append(_IKB("⚙️ ᴀᴅᴍɪɴ ᴩᴀɴᴇʟ", style="danger", callback_data="menu_admin"))
+    mk.row(*nav)
+    return mk
 
 def kb_bomber():
     mk=ReplyKeyboardMarkup(resize_keyboard=True,row_width=2)
@@ -5831,9 +5803,11 @@ def h_owner(m):
     _CK = _te("6147565374289220368")
     _Crown = _te("6289741869962236795")
     _Star  = _te("5465629669829128119")
-    mk = InlineKeyboardMarkup()
-    mk.add(_IKB("📩 Contact @Vickyffstore1", url="https://t.me/Felix_bhai"))
-    mk.add(_IKB("📢 Join @Vickyffstore1", url="https://t.me/Felix_modz1"))
+    mk = InlineKeyboardMarkup(row_width=2)
+    mk.row(
+        _IKB("📩 @Vickyffstore1", style="success", url="https://t.me/Vickyffstore1"),
+        _IKB("🆘 SUPPORT", style="success", url="https://t.me/VICKYFFSUPPORT")
+    )
     bot.reply_to(m,
         f"<blockquote>{_L}\n"
         f"{_Crown} <b>ᴏᴡɴᴇʀ / ꜱᴜᴩᴩᴏʀᴛ</b>\n\n"
@@ -9954,18 +9928,46 @@ def h_callback(call):
     # ── menu page 2 ──
     if d=="menu_p2":
         bot.answer_callback_query(call.id)
-        try: bot.edit_message_reply_markup(call.message.chat.id,call.message.message_id,reply_markup=kb_menu_p2(uid))
+        try: bot.edit_message_reply_markup(call.message.chat.id,call.message.message_id,reply_markup=kb_p2(uid))
         except: pass; return
 
     if d=="menu_p1":
         bot.answer_callback_query(call.id)
-        try: bot.edit_message_reply_markup(call.message.chat.id,call.message.message_id,reply_markup=kb_menu_p1(uid))
+        try: bot.edit_message_reply_markup(call.message.chat.id,call.message.message_id,reply_markup=kb_p1(uid))
         except: pass; return
 
     if d=="menu_close":
         bot.answer_callback_query(call.id)
         try: bot.delete_message(call.message.chat.id,call.message.message_id)
         except: pass; return
+
+    if d=="menu_spin":
+        bot.answer_callback_query(call.id)
+        bot.send_message(uid, "🎁 Daily Spin ke liye /spin command bhejein.")
+        return
+
+    if d=="menu_admin":
+        bot.answer_callback_query(call.id)
+        if is_admin(uid):
+            bot.send_message(uid, "<blockquote>⚙️ <b>ADMIN PANEL</b></blockquote>", reply_markup=kb_admin_p1(), parse_mode="HTML")
+        else:
+            bot.answer_callback_query(call.id, "❌ Admin only")
+        return
+
+    if d=="menu_leaderboard":
+        bot.answer_callback_query(call.id)
+        bot.send_message(uid, "🏆 Leaderboard ke liye /leaderboard command try karein.")
+        return
+
+    if d=="menu_redeem":
+        bot.answer_callback_query(call.id)
+        bot.send_message(uid, "🎟️ Redeem code ke liye /redeem command bhejein.")
+        return
+
+    if d=="menu_clone":
+        bot.answer_callback_query(call.id)
+        bot.send_message(uid, "🤖 Clone Bot option ke liye admin se contact karein.")
+        return
 
     # ── menu feature callbacks ──
     smap={'menu_number':S_NUM,'menu_username':S_USER,'menu_tgid':S_TID,'menu_aadhar':S_ADH,
