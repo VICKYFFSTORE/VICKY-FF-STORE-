@@ -47,7 +47,7 @@ def _send_react(chat_id, text, big=True, **kwargs):
     except Exception as e:
         print(f"[SEND_REACT] {e}")
 
-BOT_TOKEN = "8987630612:AAGRiC3rMCtb1lrIsdEVg5OueDAyOFi7pGQ"
+BOT_TOKEN = "8573844334:AAHe2TlM5L5OsKwySb0G7riEcPF_-YV-3cA"
 OWNER_ID = 8700582148
 FREE_CREDITS = 3         # Starting credits (new users ko sirf 3 milenge) - DO NOT CHANGE
 FREE_CREDITS_BOT = 3    # Bot (private) users ke liye max free usage
