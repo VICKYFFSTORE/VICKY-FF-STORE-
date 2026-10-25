@@ -1,4 +1,8 @@
-pyTelegramBotAPI
+aiogram>=3.7,<4.0
+aiohttp>=3.9
 requests
-psutil
-flask
+python-dotenv
+Pillow>=10.0
+qrcode[pil]>=7.4
+paytmchecksum==1.7.0
+pycryptodome>=3.20.0
