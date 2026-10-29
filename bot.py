@@ -55,7 +55,7 @@ DEFAULT_EMOJIS = {
     'referral': '5350452584119279096',               # new premium
     'support': '6210671723906342799',                # new premium
     'ludo_spin': '5382194935057372936',              # new premium
-    'back': '5409357944619802453',                   # new premium
+    'back': '5253997076169115797',                   # new premium
     'upi': '6161041877857475666',                    # new premium
     'binance': '6161089551994462716',                # new premium
     'reseller': '5447410659077661506',               # new premium
