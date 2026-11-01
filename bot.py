@@ -25,7 +25,7 @@ from aiogram.types import (
 # ==============================================================================
 # 1. BOT CONFIGURATION & CONSTANTS
 # ==============================================================================
-BOT_TOKEN = os.getenv("8737610592:AAH_P9S922j1-QBsIk9dXw_mJ_YFr6PqVY8", "")
+BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 BOT_USERNAME = "@VickyXmodestor_bot"
 ADMIN_ID = 8700582148
 ADMIN_CONTACT = "@Vickyffstore1"
