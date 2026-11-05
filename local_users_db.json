@@ -1,0 +1,61 @@
+{
+    "6964360406": {
+        "balance": 2.0,
+        "credited_payment_orders": {
+            "FAMPAY20260810201411B370B930": {
+                "amount": 1.0,
+                "credited_at": "2026-08-10 20:15:03",
+                "transaction_id": "FMPIB6376589583"
+            },
+            "FAMPAY20260810201540A5299B3F": {
+                "amount": 1.0,
+                "credited_at": "2026-08-10 20:16:17",
+                "transaction_id": "FMPIB6376600115"
+            }
+        },
+        "username": "SUNNY (PAPA AAYA #TEAM KING COWNER)",
+        "first_name": "SUNNY (PAPA AAYA #TEAM KING COWNER)",
+        "registered_at": "2026-08-10 20:13:22",
+        "purchased_keys": {},
+        "referred_by": null,
+        "referral_count": 0,
+        "total_referral_earned": 0.0,
+        "is_\u0280\u1d07\ua731\u1d07\u029f\u029f\u1d07\u0280": false,
+        "phone_number": "",
+        "phone_verified": false
+    },
+    "7361587731": {
+        "balance": 0.0,
+        "credited_payment_orders": {},
+        "username": "TG HACKER \u2764\ufe0f",
+        "first_name": "TG HACKER \u2764\ufe0f",
+        "registered_at": "2026-08-10 20:20:15",
+        "purchased_keys": {},
+        "referred_by": null,
+        "referral_count": 0,
+        "total_referral_earned": 0.0,
+        "is_\u0280\u1d07\ua731\u1d07\u029f\u029f\u1d07\u0280": false,
+        "phone_number": "",
+        "phone_verified": false
+    },
+    "7324665022": {
+        "balance": 1.0,
+        "credited_payment_orders": {
+            "FAMPAY20260810202417C06506B2": {
+                "amount": 1.0,
+                "credited_at": "2026-08-10 20:25:00",
+                "transaction_id": "FMPIB6376672601"
+            }
+        },
+        "username": "AmitXBro",
+        "first_name": "AMIT MODS (OWNER)",
+        "registered_at": "2026-08-10 20:21:48",
+        "purchased_keys": {},
+        "referred_by": null,
+        "referral_count": 0,
+        "total_referral_earned": 0.0,
+        "is_\u0280\u1d07\ua731\u1d07\u029f\u029f\u1d07\u0280": false,
+        "phone_number": "",
+        "phone_verified": false
+    }
+}
